@@ -1,8 +1,7 @@
 CONFIG = {
 	'working_dir': '/home/box/web',
 	'args': (
-		'--workers=16',
-		'--timeout=60',
-		'hello.py',
+		'--bind=0.0.0.0:8080',
+		'hello.py:app',
 	),
 }
