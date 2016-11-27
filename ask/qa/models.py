@@ -22,7 +22,7 @@ class Question(models.Model):
     author = models.ForeignKey(auth_models.User)
     likes = models.ManyToManyField(auth_models.User, related_name = '+')
 
-    objects = QuestionManager
+    objects = QuestionManager()
 
 
 class Answer(models.Model):
