@@ -23,8 +23,8 @@ urlpatterns = [
     url(r'^$', views.question_list_all),
     url(r'^login/$', views.test),
     url(r'^signup/$', views.test),
-    url(r'^question/(?P<id>\d+)/$', views.question_details, name='question'),
-    url(r'^ask/$', views.test),
+    url(r'^question/(?P<q_id>\d+)/$', views.question_details, name='question'),
+    url(r'^ask/$', views.add_question),
     url(r'^popular/$', views.popular_list_all),
     url(r'^new/$', views.test)
 ]

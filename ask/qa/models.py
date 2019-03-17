@@ -21,7 +21,7 @@ class Question(models.Model):
     added_at = models.DateTimeField(blank=True, auto_now_add=True)
     rating = models.IntegerField(default=0)
     author = models.ForeignKey(auth_models.User)
-    likes = models.ManyToManyField(auth_models.User, related_name = '+')
+    likes = models.ManyToManyField(auth_models.User, related_name='+')
     objects = QuestionManager()
 
     def get_url(self):
@@ -29,6 +29,7 @@ class Question(models.Model):
 
     def __unicode__(self):
         return self.title
+
 
 class Answer(models.Model):
     text = models.TextField()

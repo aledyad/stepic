@@ -1,12 +1,14 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_GET
+from django.contrib.auth import models as auth_models
 
 from models import Question
+from forms import AskForm, AnswerForm
 
 # Create your views here.
 
@@ -31,11 +33,22 @@ def popular_list_all(request):
         })
 
 
-@require_GET
-def question_details(request, id):
-    question = get_object_or_404(Question, pk=id)
+#@require_GET
+def question_details(request, q_id):
+    question = get_object_or_404(Question, pk=q_id)
     answers = question.answer_set.all
-    return render(request, 'question.html', {'question': question, 'answers': answers})
+
+    if request.method == "POST":
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            form.cleaned_data['author'] = auth_models.User.objects.first()
+            form.cleaned_data['question'] = question
+            answer = form.save()
+            url = answer.question.get_url()
+            return HttpResponseRedirect(url)
+    else:
+        form = AnswerForm()
+    return render(request, 'question.html', {'question': question, 'answers': answers, 'form': form})
 
 
 def paginate(request, qs):
@@ -55,3 +68,18 @@ def paginate(request, qs):
     except EmptyPage:
         page = paginator.page(paginator.num_pages)
     return page
+
+
+def add_question(request):
+    if request.method == "POST":
+        form = AskForm(request.POST)
+        if form.is_valid():
+            form.cleaned_data['author'] = auth_models.User.objects.first()
+            ask = form.save()
+            url = ask.get_url()
+            return HttpResponseRedirect(url)
+    else:
+        form = AskForm()
+    return render(request, 'question_form.html', {
+        'form': form
+    })
