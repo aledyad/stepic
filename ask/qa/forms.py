@@ -15,6 +15,7 @@ class AskForm(forms.Form):
 
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.TextInput)
+    question = forms.Field
 
     def save(self):
         answer = Answer(**self.cleaned_data)
