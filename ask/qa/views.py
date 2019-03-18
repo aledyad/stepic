@@ -47,7 +47,7 @@ def question_details(request, q_id):
             url = answer.question.get_url()
             return HttpResponseRedirect(url)
     else:
-        form = AnswerForm()
+        form = AnswerForm({'question': q_id})
     return render(request, 'question.html', {'question': question, 'answers': answers, 'form': form})
 
 
