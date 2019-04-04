@@ -4,11 +4,10 @@ from django.core.paginator import EmptyPage
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import Http404
 from django.shortcuts import render, get_object_or_404
-from django.views.decorators.http import require_GET
-from django.contrib.auth import models as auth_models
+from django.contrib.auth import login
 
 from models import Question
-from forms import AskForm, AnswerForm
+from forms import AskForm, AnswerForm, SignupForm
 
 # Create your views here.
 
@@ -33,7 +32,6 @@ def popular_list_all(request):
         })
 
 
-#@require_GET
 def question_details(request, q_id):
     question = get_object_or_404(Question, pk=q_id)
     answers = question.answer_set.all
@@ -41,7 +39,7 @@ def question_details(request, q_id):
     if request.method == "POST":
         form = AnswerForm(request.POST)
         if form.is_valid():
-            form.cleaned_data['author'] = auth_models.User.objects.first()
+            form.cleaned_data['author'] = request.user
             form.cleaned_data['question'] = question
             answer = form.save()
             url = answer.question.get_url()
@@ -74,12 +72,26 @@ def add_question(request):
     if request.method == "POST":
         form = AskForm(request.POST)
         if form.is_valid():
-            form.cleaned_data['author'] = auth_models.User.objects.first()
+            form.cleaned_data['author'] = request.user
             ask = form.save()
             url = ask.get_url()
             return HttpResponseRedirect(url)
     else:
         form = AskForm()
     return render(request, 'question_form.html', {
+        'form': form
+    })
+
+
+def signup(request):
+    if request.method == "POST":
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = SignupForm()
+    return render(request, 'signup_form.html', {
         'form': form
     })

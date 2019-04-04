@@ -14,15 +14,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url
-from django.contrib import admin
+from django.contrib.auth import views as auth_views
 
 from qa import views
 
 urlpatterns = [
 #    url(r'^admin/', admin.site.urls),
     url(r'^$', views.question_list_all),
-    url(r'^login/$', views.test),
-    url(r'^signup/$', views.test),
+    url(r'^login/$', auth_views.login, name='login'),
+    url(r'^signup/$', views.signup),
     url(r'^question/(?P<q_id>\d+)/$', views.question_details, name='question'),
     url(r'^ask/$', views.add_question),
     url(r'^popular/$', views.popular_list_all),
